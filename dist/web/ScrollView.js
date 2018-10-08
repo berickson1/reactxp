@@ -106,13 +106,21 @@ var ScrollView = /** @class */ (function (_super) {
             // reporting sometimes doesn't get handled for up to seconds at a time.
             // Force the list of deferred changes to be reported now.
             ViewBase_1.default._reportDeferredLayoutChanges();
-            if (_this.props.onScroll) {
+            if (_this.props.onScroll || _this.props.scrollXAnimatedValue || _this.props.scrollYAnimatedValue) {
                 onLayoutPromise.then(function () {
                     var container = _this._getContainer();
                     if (!container) {
                         return;
                     }
-                    _this.props.onScroll(container.scrollTop, container.scrollLeft);
+                    if (_this.props.onScroll) {
+                        _this.props.onScroll(container.scrollTop, container.scrollLeft);
+                    }
+                    if (_this.props.scrollXAnimatedValue) {
+                        _this.props.scrollXAnimatedValue.setValue(container.scrollLeft);
+                    }
+                    if (_this.props.scrollYAnimatedValue) {
+                        _this.props.scrollYAnimatedValue.setValue(container.scrollTop);
+                    }
                 });
             }
         }, (_this.props.scrollEventThrottle || _defaultScrollThrottleValue), { leading: true, trailing: true });

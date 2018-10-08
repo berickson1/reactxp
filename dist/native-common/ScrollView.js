@@ -51,9 +51,14 @@ var ScrollView = /** @class */ (function (_super) {
         };
         return _this;
     }
-    ScrollView.prototype._render = function (props) {
-        var nativeProps = props;
-        return (React.createElement(RN.ScrollView, __assign({}, nativeProps), props.children));
+    ScrollView.prototype._render = function (nativeProps) {
+        if (this.props.scrollXAnimatedValue || this.props.scrollYAnimatedValue) {
+            // Have to jump over to an Animated ScrollView to use an RN.Animated.event...
+            return (React.createElement(RN.Animated.ScrollView, __assign({}, nativeProps), nativeProps.children));
+        }
+        else {
+            return (React.createElement(RN.ScrollView, __assign({}, nativeProps), nativeProps.children));
+        }
     };
     ScrollView.prototype.render = function () {
         var scrollThrottle = this.props.scrollEventThrottle || 16;
@@ -65,10 +70,31 @@ var ScrollView = /** @class */ (function (_super) {
             // We have a callback function, call the wrapper
             this._onLayout :
             undefined;
-        var scrollCallback = this.props.onScroll ?
-            // We have a callback function, call the wrapper
-            this._onScroll :
-            undefined;
+        var scrollHandler;
+        if (this.props.scrollXAnimatedValue || this.props.scrollYAnimatedValue) {
+            // For more details on this craziness, reference:
+            // https://facebook.github.io/react-native/docs/animated#handling-gestures-and-other-events
+            var handlerWrapper = { nativeEvent: { contentOffset: {} } };
+            if (this.props.scrollXAnimatedValue) {
+                handlerWrapper.nativeEvent.contentOffset.x = this.props.scrollXAnimatedValue;
+            }
+            if (this.props.scrollYAnimatedValue) {
+                handlerWrapper.nativeEvent.contentOffset.y = this.props.scrollYAnimatedValue;
+            }
+            var eventConfig = {
+                useNativeDriver: true
+            };
+            if (this.props.onScroll) {
+                eventConfig.listener = this._onScroll;
+            }
+            scrollHandler = RN.Animated.event([handlerWrapper], eventConfig);
+        }
+        else if (this.props.onScroll) {
+            scrollHandler = this._onScroll;
+        }
+        else {
+            scrollHandler = undefined;
+        }
         var keyboardShouldPersistTaps = (this.props.keyboardShouldPersistTaps ? 'always' : 'never');
         // NOTE: We are setting `automaticallyAdjustContentInsets` to false
         // (http://facebook.github.io/react-native/docs/scrollview.html#automaticallyadjustcontentinsets). The
@@ -83,7 +109,7 @@ var ScrollView = /** @class */ (function (_super) {
         var internalProps = {
             ref: this._setNativeView,
             style: this.props.style,
-            onScroll: scrollCallback,
+            onScroll: scrollHandler,
             automaticallyAdjustContentInsets: false,
             showsHorizontalScrollIndicator: this.props.showsHorizontalScrollIndicator,
             showsVerticalScrollIndicator: this.props.showsVerticalScrollIndicator,

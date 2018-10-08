@@ -19,14 +19,12 @@ interface ValueListener {
     stopTransition(valueObject: Value): number | string | undefined;
 }
 export declare class Value extends RX.Types.AnimatedValue {
-    private _value;
+    protected _value: number | string;
     private _listeners;
-    private _interpolationConfig;
     constructor(value: number);
     _getValue(): number | string;
     _isInterpolated(): boolean;
-    _getInterpolatedValue(key: number): string | number;
-    interpolate(config: RX.Types.Animated.InterpolationConfigType): this;
+    interpolate(config: RX.Types.Animated.InterpolationConfigType): InterpolatedValue;
     setValue(value: number | string): void;
     _addListener(listenerToAdd: ValueListener): void;
     _removeListener(listenerToRemove: ValueListener): void;
@@ -34,6 +32,13 @@ export declare class Value extends RX.Types.AnimatedValue {
     _startTransition(toValue: number | string, duration: number, easing: string, delay: number, onEnd: RX.Types.Animated.EndCallback): void;
     _stopTransition(): void;
     _updateFinalValue(value: number | string): void;
+}
+export declare class InterpolatedValue extends Value {
+    private _config;
+    private _interpolationConfig;
+    constructor(_config: RX.Types.Animated.InterpolationConfigType, rootValue: Value);
+    _isInterpolated(): boolean;
+    _getInterpolatedValue(inputVal: number): string | number;
 }
 export declare let timing: RX.Types.Animated.TimingFunction;
 export declare let sequence: RX.Types.Animated.SequenceFunction;

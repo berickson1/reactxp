@@ -98,35 +98,10 @@ var Value = /** @class */ (function (_super) {
         return this._value;
     };
     Value.prototype._isInterpolated = function () {
-        return !!this._interpolationConfig;
-    };
-    Value.prototype._getInterpolatedValue = function (key) {
-        if (!this._interpolationConfig) {
-            throw 'There is no interpolation config but one is required';
-        }
-        return this._interpolationConfig[key];
+        return false;
     };
     Value.prototype.interpolate = function (config) {
-        if (!config || !config.inputRange || !config.outputRange ||
-            config.inputRange.length < 2 || config.outputRange.length < 2 ||
-            config.inputRange.length !== config.outputRange.length) {
-            throw 'The interpolation config is invalid. Input and output arrays must be same length.';
-        }
-        // This API doesn't currently support more than two elements in the
-        // interpolation array. Supporting this in the web would require the
-        // use of JS-driven animations or keyframes, both of which are prohibitively
-        // expensive from a performance and responsiveness perspective.
-        if (config.inputRange.length !== 2) {
-            if (AppConfig_1.default.isDevelopmentMode()) {
-                console.log('Web implementation of interpolate API currently supports only two interpolation values.');
-            }
-        }
-        var newInterpolationConfig = {};
-        _.each(config.inputRange, function (key, index) {
-            newInterpolationConfig[key] = config.outputRange[index];
-        });
-        this._interpolationConfig = newInterpolationConfig;
-        return this;
+        return new InterpolatedValue(config, this);
     };
     // Updates a value in this animated reference.
     Value.prototype.setValue = function (value) {
@@ -192,6 +167,77 @@ var Value = /** @class */ (function (_super) {
     return Value;
 }(RX.Types.AnimatedValue));
 exports.Value = Value;
+var InterpolatedValue = /** @class */ (function (_super) {
+    __extends(InterpolatedValue, _super);
+    function InterpolatedValue(_config, rootValue) {
+        var _this = _super.call(this, rootValue._getValue()) || this;
+        _this._config = _config;
+        if (!_this._config || !_this._config.inputRange || !_this._config.outputRange ||
+            _this._config.inputRange.length < 2 || _this._config.outputRange.length < 2 ||
+            _this._config.inputRange.length !== _this._config.outputRange.length) {
+            throw 'The interpolation config is invalid. Input and output arrays must be same length.';
+        }
+        // This API doesn't currently support more than two elements in the
+        // interpolation array. Supporting this in the web would require the
+        // use of JS-driven animations or keyframes, both of which are prohibitively
+        // expensive from a performance and responsiveness perspective.
+        if (_this._config.inputRange.length !== 2) {
+            if (AppConfig_1.default.isDevelopmentMode()) {
+                console.log('Web implementation of interpolate API currently supports only two interpolation values.');
+            }
+        }
+        var newInterpolationConfig = {};
+        _.each(_this._config.inputRange, function (key, index) {
+            newInterpolationConfig[key] = _this._config.outputRange[index];
+        });
+        _this._interpolationConfig = newInterpolationConfig;
+        var self = _this;
+        rootValue._addListener({
+            setValue: function (valueObject, newValue) {
+                self.setValue(newValue);
+            },
+            startTransition: function (valueObject, from, toValue, duration, easing, delay, onEnd) {
+                if (!_.isNumber(toValue)) {
+                    throw 'Must use numbers as inputs to InterpolatedValues';
+                }
+                self._startTransition(toValue, duration, easing, delay, function () { return undefined; });
+            },
+            stopTransition: function (valueObject) {
+                self._stopTransition();
+                return self._getValue();
+            }
+        });
+        return _this;
+    }
+    InterpolatedValue.prototype._isInterpolated = function () {
+        return true;
+    };
+    InterpolatedValue.prototype._getInterpolatedValue = function (inputVal) {
+        if (!this._interpolationConfig) {
+            throw 'There is no interpolation config but one is required';
+        }
+        if (this._interpolationConfig[inputVal]) {
+            return this._interpolationConfig[inputVal];
+        }
+        if (!_.isNumber(this._config.outputRange[0])) {
+            throw 'Non-transitional interpolations on web only supported as numerics';
+        }
+        if (inputVal < this._config.inputRange[0]) {
+            return this._config.outputRange[0];
+        }
+        for (var i = 1; i < this._config.inputRange.length - 1; i++) {
+            if (inputVal < this._config.inputRange[i]) {
+                var ratio = (inputVal - this._config.inputRange[i - 1]) /
+                    (this._config.inputRange[i] - this._config.inputRange[i - 1]);
+                return this._config.outputRange[i] * ratio +
+                    this._config.outputRange[i - 1] * (1 - ratio);
+            }
+        }
+        return this._config.outputRange[this._config.inputRange.length - 1];
+    };
+    return InterpolatedValue;
+}(Value));
+exports.InterpolatedValue = InterpolatedValue;
 exports.timing = function (value, config) {
     if (!value || !config) {
         throw 'Timing animation requires value and config';

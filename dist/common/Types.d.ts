@@ -556,6 +556,8 @@ export interface ScrollViewProps extends CommonProps, CommonAccessibilityProps {
     overScrollMode?: 'always' | 'always-if-content-scrolls' | 'never';
     scrollIndicatorInsets?: ScrollIndicatorInsets;
     tabNavigation?: 'local' | 'cycle' | 'once';
+    scrollXAnimatedValue?: RX.Types.AnimatedValue;
+    scrollYAnimatedValue?: RX.Types.AnimatedValue;
 }
 export interface LinkProps extends CommonStyledProps<LinkStyleRuleSet> {
     title?: string;

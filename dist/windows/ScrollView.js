@@ -32,8 +32,6 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = require("react");
-var RN = require("react-native");
 var ScrollView_1 = require("../native-common/ScrollView");
 var EventHelpers_1 = require("../native-common/utils/EventHelpers");
 var ScrollView = /** @class */ (function (_super) {
@@ -47,14 +45,15 @@ var ScrollView = /** @class */ (function (_super) {
         };
         return _this;
     }
-    ScrollView.prototype._render = function (props) {
+    ScrollView.prototype._render = function (nativeProps) {
         var onKeyDownCallback = this.props.onKeyPress ? this._onKeyDown : undefined;
         // TODO: #737970 Remove special case for UWP when this bug is fixed. The bug
         //   causes you to have to click twice instead of once on some pieces of UI in
         //   order for the UI to acknowledge your interaction.
         var keyboardShouldPersistTaps = 'always';
-        var nativeProps = __assign({}, props, { onKeyDown: onKeyDownCallback, keyboardShouldPersistTaps: keyboardShouldPersistTaps, tabNavigation: this.props.tabNavigation, disableKeyboardBasedScrolling: true });
-        return (React.createElement(RN.ScrollView, __assign({}, nativeProps), props.children));
+        // Have to hack the windows-specific onKeyDown into the props here.
+        var updatedNativeProps = __assign({}, nativeProps, { onKeyDown: onKeyDownCallback, keyboardShouldPersistTaps: keyboardShouldPersistTaps, tabNavigation: this.props.tabNavigation, disableKeyboardBasedScrolling: true });
+        return _super.prototype._render.call(this, updatedNativeProps);
     };
     return ScrollView;
 }(ScrollView_1.ScrollView));
