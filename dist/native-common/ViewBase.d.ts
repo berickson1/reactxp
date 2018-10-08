@@ -1,0 +1,23 @@
+/**
+ * ViewBase.tsx
+ *
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT license.
+ *
+ * Base class that is used for several RX views.
+ */
+import * as RN from 'react-native';
+import * as RX from '../common/Interfaces';
+export declare abstract class ViewBase<P extends RX.Types.ViewProps, S> extends RX.ViewBase<P, S> {
+    private static _defaultViewStyle;
+    private _layoutEventValues;
+    abstract render(): JSX.Element;
+    protected _nativeView: RN.View | undefined;
+    static setDefaultViewStyle(defaultViewStyle: RX.Types.ViewStyleRuleSet): void;
+    static getDefaultViewStyle(): RX.Types.StyleRuleSet<RX.Types.ViewStyle>;
+    setNativeProps(nativeProps: RN.ViewProps): void;
+    protected _setNativeView: (view: any) => void;
+    protected _getStyles(props: RX.Types.ViewProps): RX.Types.StyleRuleSetRecursive<RX.Types.StyleRuleSet<RX.Types.ViewStyle>>;
+    protected _onLayout: (event: RN.LayoutChangeEvent) => void;
+}
+export default ViewBase;
