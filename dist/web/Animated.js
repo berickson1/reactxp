@@ -94,7 +94,13 @@ var Value = /** @class */ (function (_super) {
         return _this;
     }
     // Gets the current animated value (this gets updates after animation concludes)
-    Value.prototype._getValue = function () {
+    Value.prototype._getInputValue = function () {
+        return this._value;
+    };
+    Value.prototype._getOutputValue = function () {
+        return this._getInterpolatedValue(this._value);
+    };
+    Value.prototype._getInterpolatedValue = function (inputVal) {
         return this._value;
     };
     Value.prototype._isInterpolated = function () {
@@ -146,7 +152,7 @@ var Value = /** @class */ (function (_super) {
             return;
         }
         _.each(this._listeners, function (listener) {
-            listener.startTransition(_this, _this._getValue(), toValue, duration, easing, delay, onEnd);
+            listener.startTransition(_this, _this._getInputValue(), toValue, duration, easing, delay, onEnd);
         });
     };
     // Stop animation.
@@ -170,7 +176,7 @@ exports.Value = Value;
 var InterpolatedValue = /** @class */ (function (_super) {
     __extends(InterpolatedValue, _super);
     function InterpolatedValue(_config, rootValue) {
-        var _this = _super.call(this, rootValue._getValue()) || this;
+        var _this = _super.call(this, rootValue._getOutputValue()) || this;
         _this._config = _config;
         if (!_this._config || !_this._config.inputRange || !_this._config.outputRange ||
             _this._config.inputRange.length < 2 || _this._config.outputRange.length < 2 ||
@@ -194,27 +200,24 @@ var InterpolatedValue = /** @class */ (function (_super) {
         var self = _this;
         rootValue._addListener({
             setValue: function (valueObject, newValue) {
-                self.setValue(newValue);
+                self.setValue(valueObject._getOutputValue());
             },
             startTransition: function (valueObject, from, toValue, duration, easing, delay, onEnd) {
-                if (!_.isNumber(toValue)) {
-                    throw 'Must use numbers as inputs to InterpolatedValues';
-                }
-                self._startTransition(toValue, duration, easing, delay, function () { return undefined; });
+                self._startTransition(valueObject._getInterpolatedValue(toValue), duration, easing, delay, function () { return undefined; });
             },
             stopTransition: function (valueObject) {
                 self._stopTransition();
-                return self._getValue();
+                return undefined;
             }
         });
         return _this;
     }
-    InterpolatedValue.prototype._isInterpolated = function () {
-        return true;
-    };
     InterpolatedValue.prototype._getInterpolatedValue = function (inputVal) {
         if (!this._interpolationConfig) {
             throw 'There is no interpolation config but one is required';
+        }
+        if (!_.isNumber(inputVal)) {
+            throw 'Numeric inputVals required for interpolated values';
         }
         if (this._interpolationConfig[inputVal]) {
             return this._interpolationConfig[inputVal];
@@ -225,7 +228,7 @@ var InterpolatedValue = /** @class */ (function (_super) {
         if (inputVal < this._config.inputRange[0]) {
             return this._config.outputRange[0];
         }
-        for (var i = 1; i < this._config.inputRange.length - 1; i++) {
+        for (var i = 1; i < this._config.inputRange.length; i++) {
             if (inputVal < this._config.inputRange[i]) {
                 var ratio = (inputVal - this._config.inputRange[i - 1]) /
                     (this._config.inputRange[i] - this._config.inputRange[i - 1]);
@@ -234,6 +237,9 @@ var InterpolatedValue = /** @class */ (function (_super) {
             }
         }
         return this._config.outputRange[this._config.inputRange.length - 1];
+    };
+    InterpolatedValue.prototype._isInterpolated = function () {
+        return true;
     };
     return InterpolatedValue;
 }(Value));
@@ -381,7 +387,7 @@ function createAnimatedComponent(Component) {
             if (attrib) {
                 var domNode = this._getDomNode();
                 if (domNode) {
-                    var cssValue = this._generateCssAttributeValue(attrib, valueObject, valueObject._getValue());
+                    var cssValue = this._generateCssAttributeValue(attrib, valueObject, valueObject._getInputValue());
                     domNode.style[attrib] = cssValue;
                 }
                 return;
@@ -601,7 +607,7 @@ function createAnimatedComponent(Component) {
                 transformList.push(transform + '(' + value + ')');
             });
             _.each(this._animatedTransforms, function (value, transform) {
-                var newValue = useActiveValues && value.activeTransition ? value.activeTransition.to : value.valueObject._getValue();
+                var newValue = useActiveValues && value.activeTransition ? value.activeTransition.to : value.valueObject._getInputValue();
                 transformList.push(transform + '(' + _this._generateCssTransformValue(transform, value.valueObject, newValue) + ')');
             });
             return transformList.join(' ');
@@ -620,7 +626,7 @@ function createAnimatedComponent(Component) {
                 // Is this a dynamic (animated) value?
                 if (rawStyles[attrib] instanceof Value) {
                     var valueObj = rawStyles[attrib];
-                    this._processedStyle[attrib] = this._generateCssAttributeValue(attrib, valueObj, valueObj._getValue());
+                    this._processedStyle[attrib] = this._generateCssAttributeValue(attrib, valueObj, valueObj._getInputValue());
                     newAnimatedAttributes[attrib] = valueObj;
                 }
                 else {

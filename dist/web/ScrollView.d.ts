@@ -6,6 +6,7 @@
  *
  * Web-specific implementation of the cross-platform ScrollView abstraction.
  */
+/// <reference types="react" />
 import * as RX from '../common/Interfaces';
 import ViewBase from './ViewBase';
 export declare class ScrollView extends ViewBase<RX.Types.ScrollViewProps, RX.Types.Stateless> implements RX.ScrollView {

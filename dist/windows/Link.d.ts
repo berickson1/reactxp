@@ -6,6 +6,7 @@
  *
  * RN Desktop-specific implementation of the cross-platform Link abstraction.
  */
+/// <reference types="react" />
 import * as RN from 'react-native';
 import { FocusManagerFocusableComponent } from '../native-desktop/utils/FocusManager';
 import { LinkBase } from '../native-common/Link';

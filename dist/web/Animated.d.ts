@@ -22,7 +22,9 @@ export declare class Value extends RX.Types.AnimatedValue {
     protected _value: number | string;
     private _listeners;
     constructor(value: number);
-    _getValue(): number | string;
+    _getInputValue(): number | string;
+    _getOutputValue(): number | string;
+    _getInterpolatedValue(inputVal: number | string): number | string;
     _isInterpolated(): boolean;
     interpolate(config: RX.Types.Animated.InterpolationConfigType): InterpolatedValue;
     setValue(value: number | string): void;
@@ -37,8 +39,8 @@ export declare class InterpolatedValue extends Value {
     private _config;
     private _interpolationConfig;
     constructor(_config: RX.Types.Animated.InterpolationConfigType, rootValue: Value);
+    _getInterpolatedValue(inputVal: number | string): number | string;
     _isInterpolated(): boolean;
-    _getInterpolatedValue(inputVal: number): string | number;
 }
 export declare let timing: RX.Types.Animated.TimingFunction;
 export declare let sequence: RX.Types.Animated.SequenceFunction;
