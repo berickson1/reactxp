@@ -6,7 +6,6 @@
  *
  * The top-most view that's used for proper layering or modals and popups.
  */
-/// <reference types="react" />
 import { RootView as RootViewBase, RootViewUsingProps as RootViewUsingPropsBase, BaseRootViewProps, RootViewPropsWithMainViewType, RootViewState, BaseRootView } from '../native-desktop/RootView';
 declare class RootViewUsingStore extends RootViewBase {
     renderTopView(content: JSX.Element): JSX.Element;

@@ -6,7 +6,6 @@
  *
  * Web Alert dialog boxes modal content.
  */
-/// <reference types="react" />
 import * as RX from '../common/Interfaces';
 export interface AppModalContentProps extends RX.Types.ViewProps {
     buttons?: RX.Types.AlertButtonSpec[];

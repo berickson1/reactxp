@@ -8,7 +8,6 @@
  * calculation on rendering as directed by position instructions received
  * through properties.
  */
-/// <reference types="react" />
 import * as RN from 'react-native';
 import { PopupContainerViewBase, PopupContainerViewBaseProps, PopupContainerViewContext } from '../common/PopupContainerViewBase';
 import { Types } from '../common/Interfaces';

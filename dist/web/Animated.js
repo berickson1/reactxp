@@ -101,7 +101,7 @@ var Value = /** @class */ (function (_super) {
         return this._getInterpolatedValue(this._value);
     };
     Value.prototype._getInterpolatedValue = function (inputVal) {
-        return this._value;
+        return inputVal;
     };
     Value.prototype._isInterpolated = function () {
         return false;
@@ -151,8 +151,17 @@ var Value = /** @class */ (function (_super) {
             }
             return;
         }
+        // Only call onEnd once for a series of listeners.
+        var onEndCalled = false;
+        var onEndWrapper = function (result) {
+            if (onEndCalled) {
+                return;
+            }
+            onEndCalled = true;
+            onEnd(result);
+        };
         _.each(this._listeners, function (listener) {
-            listener.startTransition(_this, _this._getInputValue(), toValue, duration, easing, delay, onEnd);
+            listener.startTransition(_this, _this._getOutputValue(), _this._getInterpolatedValue(toValue), duration, easing, delay, onEndWrapper);
         });
     };
     // Stop animation.
@@ -203,7 +212,7 @@ var InterpolatedValue = /** @class */ (function (_super) {
                 self.setValue(valueObject._getOutputValue());
             },
             startTransition: function (valueObject, from, toValue, duration, easing, delay, onEnd) {
-                self._startTransition(valueObject._getInterpolatedValue(toValue), duration, easing, delay, function () { return undefined; });
+                self._startTransition(toValue, duration, easing, delay, onEnd);
             },
             stopTransition: function (valueObject) {
                 self._stopTransition();
@@ -387,7 +396,7 @@ function createAnimatedComponent(Component) {
             if (attrib) {
                 var domNode = this._getDomNode();
                 if (domNode) {
-                    var cssValue = this._generateCssAttributeValue(attrib, valueObject, valueObject._getInputValue());
+                    var cssValue = this._generateCssAttributeValue(attrib, valueObject._getOutputValue());
                     domNode.style[attrib] = cssValue;
                 }
                 return;
@@ -416,8 +425,8 @@ function createAnimatedComponent(Component) {
                 }
                 this._animatedAttributes[attrib].activeTransition = {
                     property: Styles_1.default.convertJsToCssStyle(attrib),
-                    from: this._generateCssAttributeValue(attrib, this._animatedAttributes[attrib].valueObject, fromValue),
-                    to: this._generateCssAttributeValue(attrib, this._animatedAttributes[attrib].valueObject, toValue),
+                    from: this._generateCssAttributeValue(attrib, fromValue),
+                    to: this._generateCssAttributeValue(attrib, toValue),
                     duration: duration,
                     timing: easing,
                     delay: delay,
@@ -577,10 +586,7 @@ function createAnimatedComponent(Component) {
         };
         // Generates the CSS value for the specified attribute given
         // an animated value object.
-        AnimatedComponentGenerated.prototype._generateCssAttributeValue = function (attrib, valueObj, newValue) {
-            if (valueObj._isInterpolated()) {
-                newValue = valueObj._getInterpolatedValue(newValue);
-            }
+        AnimatedComponentGenerated.prototype._generateCssAttributeValue = function (attrib, newValue) {
             // If the value is a raw number, append the default units.
             // If it's a string, we assume the caller has specified the units.
             if (typeof newValue === 'number') {
@@ -588,10 +594,7 @@ function createAnimatedComponent(Component) {
             }
             return newValue;
         };
-        AnimatedComponentGenerated.prototype._generateCssTransformValue = function (transform, valueObj, newValue) {
-            if (valueObj._isInterpolated()) {
-                newValue = valueObj._getInterpolatedValue(newValue);
-            }
+        AnimatedComponentGenerated.prototype._generateCssTransformValue = function (transform, newValue) {
             // If the value is a raw number, append the default units.
             // If it's a string, we assume the caller has specified the units.
             if (typeof newValue === 'number') {
@@ -607,8 +610,8 @@ function createAnimatedComponent(Component) {
                 transformList.push(transform + '(' + value + ')');
             });
             _.each(this._animatedTransforms, function (value, transform) {
-                var newValue = useActiveValues && value.activeTransition ? value.activeTransition.to : value.valueObject._getInputValue();
-                transformList.push(transform + '(' + _this._generateCssTransformValue(transform, value.valueObject, newValue) + ')');
+                var newValue = useActiveValues && value.activeTransition ? value.activeTransition.to : value.valueObject._getOutputValue();
+                transformList.push(transform + '(' + _this._generateCssTransformValue(transform, newValue) + ')');
             });
             return transformList.join(' ');
         };
@@ -626,7 +629,7 @@ function createAnimatedComponent(Component) {
                 // Is this a dynamic (animated) value?
                 if (rawStyles[attrib] instanceof Value) {
                     var valueObj = rawStyles[attrib];
-                    this._processedStyle[attrib] = this._generateCssAttributeValue(attrib, valueObj, valueObj._getInputValue());
+                    this._processedStyle[attrib] = this._generateCssAttributeValue(attrib, valueObj._getOutputValue());
                     newAnimatedAttributes[attrib] = valueObj;
                 }
                 else {

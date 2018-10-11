@@ -6,7 +6,6 @@
  *
  * Web-specific implementation of the cross-platform Button abstraction.
  */
-/// <reference types="react" />
 import * as PropTypes from 'prop-types';
 import { Button as ButtonBase } from '../common/Interfaces';
 import { FocusArbitratorProvider } from '../common/utils/AutoFocusHelper';

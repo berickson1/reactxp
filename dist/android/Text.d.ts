@@ -6,7 +6,6 @@
  *
  * Android-specific implementation of Text component.
  */
-/// <reference types="react" />
 import { Text as CommonText } from '../native-common/Text';
 import { Types } from '../common/Interfaces';
 export declare class Text extends CommonText {

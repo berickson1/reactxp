@@ -6,7 +6,6 @@
  *
  * A base class for the Web-specific implementation of the cross-platform View abstraction.
  */
-/// <reference types="react" />
 import * as SyncTasks from 'synctasks';
 import * as RX from '../common/Interfaces';
 export declare abstract class ViewBase<P extends RX.Types.ViewProps, S> extends RX.ViewBase<P, S> {

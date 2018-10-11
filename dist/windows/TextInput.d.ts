@@ -6,7 +6,6 @@
  *
  * RN Windows-specific implementation of the cross-platform TextInput abstraction.
  */
-/// <reference types="react" />
 import * as RN from 'react-native';
 import { FocusManagerFocusableComponent } from '../native-desktop/utils/FocusManager';
 import { TextInput as TextInputBase } from '../native-common/TextInput';
