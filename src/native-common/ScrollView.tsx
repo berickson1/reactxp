@@ -13,6 +13,7 @@ import * as RN from 'react-native';
 import * as RX from '../common/Interfaces';
 import ViewBase from './ViewBase';
 
+const overrideKeyboardShouldPersistTaps = RN.Platform.OS === 'macos' || RN.Platform.OS === 'windows'; 
 export class ScrollView extends ViewBase<RX.Types.ScrollViewProps, RX.Types.Stateless> implements RX.ScrollView {
     private _scrollTop = 0;
     private _scrollLeft = 0;
@@ -72,7 +73,7 @@ export class ScrollView extends ViewBase<RX.Types.ScrollViewProps, RX.Types.Stat
             scrollHandler = undefined;
         }
 
-        const keyboardShouldPersistTaps = (this.props.keyboardShouldPersistTaps ? 'always' : 'never');
+        const keyboardShouldPersistTaps = (overrideKeyboardShouldPersistTaps || this.props.keyboardShouldPersistTaps ? 'always' : 'never');
 
         // NOTE: We are setting `automaticallyAdjustContentInsets` to false
         // (http://facebook.github.io/react-native/docs/scrollview.html#automaticallyadjustcontentinsets). The

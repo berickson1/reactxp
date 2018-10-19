@@ -35,6 +35,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
 var RN = require("react-native");
 var ViewBase_1 = require("./ViewBase");
+var overrideKeyboardShouldPersistTaps = RN.Platform.OS === 'macos' || RN.Platform.OS === 'windows';
 var ScrollView = /** @class */ (function (_super) {
     __extends(ScrollView, _super);
     function ScrollView() {
@@ -95,7 +96,7 @@ var ScrollView = /** @class */ (function (_super) {
         else {
             scrollHandler = undefined;
         }
-        var keyboardShouldPersistTaps = (this.props.keyboardShouldPersistTaps ? 'always' : 'never');
+        var keyboardShouldPersistTaps = (overrideKeyboardShouldPersistTaps || this.props.keyboardShouldPersistTaps ? 'always' : 'never');
         // NOTE: We are setting `automaticallyAdjustContentInsets` to false
         // (http://facebook.github.io/react-native/docs/scrollview.html#automaticallyadjustcontentinsets). The
         // 'automaticallyAdjustContentInsets' property is designed to offset the ScrollView's content to account for the
