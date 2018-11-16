@@ -558,7 +558,9 @@ export class View extends ViewBase<Types.ViewProps, Types.Stateless> {
     }
 
     blur() {
-        // Nothing to do.
+        if (this._nativeComponent && this._nativeComponent.blur) {
+            this._nativeComponent.blur();
+        }
     }
 
     requestFocus() {
@@ -572,6 +574,9 @@ export class View extends ViewBase<Types.ViewProps, Types.Stateless> {
     focus() {
         if (this._isMounted) {
             AccessibilityUtil.setAccessibilityFocus(this);
+        }
+        if (this._nativeComponent && this._nativeComponent.focus) {
+            this._nativeComponent.focus();
         }
     }
 }
