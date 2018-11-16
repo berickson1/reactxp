@@ -290,15 +290,15 @@ var View = /** @class */ (function (_super) {
             accessibilityComponentType: AccessibilityUtil_1.default.accessibilityComponentTypeToString(props.accessibilityTraits),
             accessibilityLiveRegion: AccessibilityUtil_1.default.accessibilityLiveRegionToString(props.accessibilityLiveRegion)
         };
-        if (_isNativeMacOs && App_1.default.supportsExperimentalKeyboardNavigation && (this.props.onPress ||
-            (this.props.tabIndex !== undefined && this.props.tabIndex >= 0))) {
+        if (_isNativeMacOs && App_1.default.supportsExperimentalKeyboardNavigation && (props.onPress ||
+            (props.tabIndex !== undefined && props.tabIndex >= 0))) {
             var macAccessibilityProps = accessibilityProps;
-            if (this.props.tabIndex !== -1) {
+            if (props.tabIndex !== -1) {
                 macAccessibilityProps.acceptsKeyboardFocus = true;
                 macAccessibilityProps.enableFocusRing = true;
             }
-            if (this.props.onPress) {
-                macAccessibilityProps.onClick = this.props.onPress;
+            if (props.onPress) {
+                macAccessibilityProps.onClick = props.onPress;
             }
         }
         this._internalProps = lodashMini_1.extend(this._internalProps, accessibilityProps);
