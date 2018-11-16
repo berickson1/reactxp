@@ -52,10 +52,9 @@ var Image = /** @class */ (function (_super) {
     __extends(Image, _super);
     function Image() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this._mountedComponent = null;
         _this.state = { forceCache: false, lastNativeError: undefined, headers: _this._buildHeaders() };
         _this._onMount = function (component) {
-            _this._mountedComponent = component;
+            _this._mountedComponent = component || undefined;
         };
         _this._onLoad = function (e) {
             if (!_this._mountedComponent) {

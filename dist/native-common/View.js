@@ -131,10 +131,10 @@ var View = /** @class */ (function (_super) {
         _this._mixinIsApplied = false;
         _this._isMounted = false;
         _this._hideUnderlay = function () {
-            if (!_this._isMounted || !_this._nativeView) {
+            if (!_this._isMounted || !_this._nativeComponent) {
                 return;
             }
-            _this._nativeView.setNativeProps({
+            _this._nativeComponent.setNativeProps({
                 style: [{
                         backgroundColor: _underlayInactive
                     }, _this.props.style]
@@ -274,7 +274,7 @@ var View = /** @class */ (function (_super) {
      */
     View.prototype._buildInternalProps = function (props) {
         this._internalProps = lodashMini_1.clone(props);
-        this._internalProps.ref = this._setNativeView;
+        this._internalProps.ref = this._setNativeComponent;
         if (props.testId) {
             // Convert from testId to testID.
             this._internalProps.testID = this._internalProps.testId;
@@ -343,7 +343,7 @@ var View = /** @class */ (function (_super) {
         }
     };
     View.prototype._isTouchFeedbackApplicable = function () {
-        return this._isMounted && this._mixinIsApplied && this._nativeView;
+        return this._isMounted && this._mixinIsApplied && !!this._nativeComponent;
     };
     View.prototype._opacityActive = function (duration) {
         this._setOpacityTo(this.props.activeOpacity || _defaultActiveOpacity, duration);
@@ -366,10 +366,10 @@ var View = /** @class */ (function (_super) {
         }).start();
     };
     View.prototype._showUnderlay = function () {
-        if (!this._nativeView) {
+        if (!this._nativeComponent) {
             return;
         }
-        this._nativeView.setNativeProps({
+        this._nativeComponent.setNativeProps({
             style: {
                 backgroundColor: this.props.underlayColor
             }
@@ -462,7 +462,9 @@ var View = /** @class */ (function (_super) {
         // Nothing to do.
     };
     View.prototype.blur = function () {
-        // Nothing to do.
+        if (this._nativeComponent && this._nativeComponent.blur) {
+            this._nativeComponent.blur();
+        }
     };
     View.prototype.requestFocus = function () {
         var _this = this;
@@ -471,6 +473,9 @@ var View = /** @class */ (function (_super) {
     View.prototype.focus = function () {
         if (this._isMounted) {
             AccessibilityUtil_1.default.setAccessibilityFocus(this);
+        }
+        if (this._nativeComponent && this._nativeComponent.focus) {
+            this._nativeComponent.focus();
         }
     };
     View.contextTypes = {

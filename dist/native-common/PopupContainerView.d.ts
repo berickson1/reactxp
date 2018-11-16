@@ -39,7 +39,7 @@ export declare class PopupContainerView extends PopupContainerViewBase<PopupCont
     componentDidMount(): void;
     componentWillUnmount(): void;
     render(): JSX.Element;
-    protected _onMount: (component: RN.ReactNativeBaseComponent<any, any> | null) => void;
+    protected _onMount: (component: RN.View | null) => void;
     private _recalcPosition;
     private _recalcPositionFromLayoutData;
     private _recalcInnerPosition;

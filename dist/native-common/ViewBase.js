@@ -27,8 +27,8 @@ var ViewBase = /** @class */ (function (_super) {
     __extends(ViewBase, _super);
     function ViewBase() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this._setNativeView = function (view) {
-            _this._nativeView = view;
+        _this._setNativeComponent = function (view) {
+            _this._nativeComponent = view || undefined;
         };
         _this._onLayout = function (event) {
             if (_this.props.onLayout) {
@@ -55,8 +55,10 @@ var ViewBase = /** @class */ (function (_super) {
     };
     // To be able to use View inside TouchableHighlight/TouchableOpacity
     ViewBase.prototype.setNativeProps = function (nativeProps) {
-        if (this._nativeView) {
-            this._nativeView.setNativeProps(nativeProps);
+        // We know that View and ScrollView both has setNative props even if the typings don't exist
+        var nativeComponent = this._nativeComponent;
+        if (nativeComponent && nativeComponent.setNativeProps) {
+            nativeComponent.setNativeProps(nativeProps);
         }
     };
     ViewBase.prototype._getStyles = function (props) {

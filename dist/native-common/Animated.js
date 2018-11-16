@@ -52,7 +52,7 @@ var AnimatedWrapper = /** @class */ (function (_super) {
     function AnimatedWrapper() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this._onMount = function (component) {
-            _this._mountedComponent = component;
+            _this._mountedComponent = component || undefined;
         };
         return _this;
     }

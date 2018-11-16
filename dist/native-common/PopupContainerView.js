@@ -44,7 +44,7 @@ var PopupContainerView = /** @class */ (function (_super) {
         var _this = _super.call(this, props, context) || this;
         _this._viewHandle = null;
         _this._onMount = function (component) {
-            _this._mountedComponent = component;
+            _this._mountedComponent = component || undefined;
         };
         _this.state = _this._getInitialState();
         return _this;
@@ -81,7 +81,9 @@ var PopupContainerView = /** @class */ (function (_super) {
         }
     };
     PopupContainerView.prototype.componentDidMount = function () {
-        this._viewHandle = RN.findNodeHandle(this._mountedComponent);
+        if (this._mountedComponent) {
+            this._viewHandle = RN.findNodeHandle(this._mountedComponent);
+        }
         if (this.props.popupOptions && !this.props.hidden) {
             this._recalcPosition();
             this._startRepositionPopupTimer();

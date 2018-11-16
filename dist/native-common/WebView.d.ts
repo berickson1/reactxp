@@ -13,7 +13,7 @@ export declare class WebView extends React.Component<RX.Types.WebViewProps, RX.T
     private _mountedComponent;
     render(): JSX.Element;
     private _sandboxToMixedContentMode;
-    protected _onMount: (component: RN.WebView) => void;
+    protected _onMount: (component: RN.WebView | null) => void;
     protected _onMessage: (e: RN.NativeSyntheticEvent<RN.WebViewMessageEventData>) => void;
     private _buildSource;
     postMessage(message: string, targetOrigin?: string): void;

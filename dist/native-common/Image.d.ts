@@ -22,7 +22,7 @@ export declare class Image extends React.Component<Types.ImageProps, ImageState>
     static childContextTypes: React.ValidationMap<any>;
     static prefetch(url: string): SyncTasks.Promise<boolean>;
     static getMetadata(url: string): SyncTasks.Promise<Types.ImageMetadata>;
-    protected _mountedComponent: RN.Image | null;
+    protected _mountedComponent: RN.Image | undefined;
     private _nativeImageWidth;
     private _nativeImageHeight;
     readonly state: ImageState;

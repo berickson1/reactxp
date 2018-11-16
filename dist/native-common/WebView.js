@@ -46,9 +46,8 @@ var WebView = /** @class */ (function (_super) {
     __extends(WebView, _super);
     function WebView() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this._mountedComponent = null;
         _this._onMount = function (component) {
-            _this._mountedComponent = component;
+            _this._mountedComponent = component || undefined;
         };
         _this._onMessage = function (e) {
             if (_this.props.onMessage) {

@@ -14,7 +14,7 @@ import ViewBase from './ViewBase';
 export interface ViewContext {
     focusArbitrator?: FocusArbitratorProvider;
 }
-export declare class View extends ViewBase<Types.ViewProps, Types.Stateless> {
+export declare class View extends ViewBase<Types.ViewProps, Types.Stateless, RN.View> {
     static contextTypes: React.ValidationMap<any>;
     context: ViewContext;
     static childContextTypes: React.ValidationMap<any>;

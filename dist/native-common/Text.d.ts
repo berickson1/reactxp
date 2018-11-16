@@ -19,11 +19,11 @@ export declare class Text extends React.Component<Types.TextProps, Types.Statele
     static contextTypes: React.ValidationMap<any>;
     context: TextContext;
     static childContextTypes: React.ValidationMap<any>;
-    protected _mountedComponent: RN.ReactNativeBaseComponent<any, any> | null;
+    protected _mountedComponent: RN.Text | undefined;
     setNativeProps(nativeProps: RN.TextProps): void;
     render(): JSX.Element;
     componentDidMount(): void;
-    protected _onMount: (component: any) => void;
+    protected _onMount: (component: RN.Text | null) => void;
     protected _getExtendedProperties(): RN.ExtendedTextProps;
     private _onPress;
     getChildContext(): {

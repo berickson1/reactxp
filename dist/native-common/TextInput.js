@@ -50,9 +50,8 @@ var TextInput = /** @class */ (function (_super) {
     function TextInput(props, context) {
         var _this = _super.call(this, props, context) || this;
         _this._selection = { start: 0, end: 0 };
-        _this._mountedComponent = null;
         _this._onMount = function (component) {
-            _this._mountedComponent = component;
+            _this._mountedComponent = component || undefined;
         };
         _this._onFocus = function (e) {
             _this.setState({ isFocused: true });

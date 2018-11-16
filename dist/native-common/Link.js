@@ -43,10 +43,9 @@ var LinkBase = /** @class */ (function (_super) {
     __extends(LinkBase, _super);
     function LinkBase() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this._mountedComponent = null;
         _this._isMounted = false;
         _this._onMount = function (component) {
-            _this._mountedComponent = component;
+            _this._mountedComponent = component || undefined;
         };
         _this._onPress = function (e) {
             if (EventHelpers_1.default.isRightMouseButton(e)) {
@@ -120,9 +119,14 @@ var LinkBase = /** @class */ (function (_super) {
         if (this._mountedComponent) {
             AccessibilityUtil_1.default.setAccessibilityFocus(this);
         }
+        if (this._mountedComponent && this._mountedComponent.focus) {
+            this._mountedComponent.focus();
+        }
     };
     LinkBase.prototype.blur = function () {
-        // No-op
+        if (this._mountedComponent && this._mountedComponent.blur) {
+            this._mountedComponent.blur();
+        }
     };
     LinkBase.contextTypes = {
         focusArbitrator: PropTypes.object,

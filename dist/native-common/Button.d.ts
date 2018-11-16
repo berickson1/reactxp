@@ -34,13 +34,13 @@ export declare class Button extends ButtonBase {
     protected _isMounted: boolean;
     protected _isMouseOver: boolean;
     protected _isHoverStarted: boolean;
-    protected _buttonElement: any;
+    protected _buttonElement: RN.View | undefined;
     private _hideTimeout;
     private _defaultOpacityValue;
     private _opacityAnimatedValue;
     private _opacityAnimatedStyle;
     constructor(props: Types.ButtonProps, context: ButtonContext);
-    protected _render(internalProps: RN.ViewProps, onMount: (btn: any) => void): JSX.Element;
+    protected _render(internalProps: RN.ViewProps, onMount: (btn: RN.View | null) => void): JSX.Element;
     render(): JSX.Element;
     componentDidMount(): void;
     componentWillUnmount(): void;

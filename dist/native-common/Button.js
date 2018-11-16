@@ -84,7 +84,6 @@ var Button = /** @class */ (function (_super) {
         _this._isMounted = false;
         _this._isMouseOver = false;
         _this._isHoverStarted = false;
-        _this._buttonElement = null;
         _this.touchableHandleActivePressIn = function (e) {
             if (_this._isTouchFeedbackApplicable()) {
                 if (_this.props.underlayColor) {
@@ -146,7 +145,7 @@ var Button = /** @class */ (function (_super) {
             return { top: 20, left: 20, right: 20, bottom: 100 };
         };
         _this._onMount = function (btn) {
-            _this._buttonElement = btn;
+            _this._buttonElement = btn || undefined;
         };
         _this._onMouseEnter = function (e) {
             _this._isMouseOver = true;
@@ -206,7 +205,7 @@ var Button = /** @class */ (function (_super) {
         var accessibilityTrait = AccessibilityUtil_1.default.accessibilityTraitToString(this.props.accessibilityTraits, _defaultAccessibilityTrait, true);
         var accessibilityComponentType = AccessibilityUtil_1.default.accessibilityComponentTypeToString(this.props.accessibilityTraits, _defaultAccessibilityTrait);
         var opacityStyle = !this.props.disableTouchOpacityAnimation && this._opacityAnimatedStyle;
-        var disabledStyle = this.props.disabled && _styles.disabled;
+        var disabledStyle = this.props.disabled ? _styles.disabled : undefined;
         if (this.props.disabled && this.props.disabledOpacity !== undefined) {
             disabledStyle = Styles_1.default.createButtonStyle({
                 opacity: this.props.disabledOpacity
@@ -270,11 +269,16 @@ var Button = /** @class */ (function (_super) {
         AutoFocusHelper_1.FocusArbitratorProvider.requestFocus(this, function () { return _this.focus(); }, function () { return _this._isMounted; });
     };
     Button.prototype.blur = function () {
-        // native mobile platforms doesn't have the notion of blur for buttons, so ignore.
+        if (this._buttonElement && this._buttonElement.blur) {
+            this._buttonElement.blur();
+        }
     };
     Button.prototype.focus = function () {
         if (this._isMounted) {
             AccessibilityUtil_1.default.setAccessibilityFocus(this);
+        }
+        if (this._buttonElement && this._buttonElement.focus) {
+            this._buttonElement.focus();
         }
     };
     Button.prototype._setOpacityStyles = function (props, prevProps) {
