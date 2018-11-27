@@ -236,8 +236,11 @@ var Button = /** @class */ (function (_super) {
             // Cast to the object that mac expects to indirectly mutate extendedProps
             var macExtendedProps = extendedProps;
             macExtendedProps.onClick = this.touchableHandlePress;
-            macExtendedProps.acceptsKeyboardFocus = true;
-            macExtendedProps.enableFocusRing = true;
+            // Negative tabIndex prevents keyboard focus
+            if (this.props.tabIndex === undefined || this.props.tabIndex >= 0) {
+                macExtendedProps.acceptsKeyboardFocus = true;
+                macExtendedProps.enableFocusRing = true;
+            }
         }
         return this._render(extendedProps, this._onMount);
     };
