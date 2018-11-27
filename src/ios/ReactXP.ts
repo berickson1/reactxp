@@ -134,6 +134,7 @@ module ReactXP {
     export import createElement = React.createElement;
     export import Children = React.Children;
     export let __spread = (React as any).__spread;
+    export import Fragment = React.Fragment;
 }
 
 // -- STRANGE THINGS GOING ON HERE --
@@ -141,6 +142,7 @@ module ReactXP {
 
 let _rxImplementsRxInterface: typeof RXModuleInterface.ReactXP = ReactXP;
 _rxImplementsRxInterface = _rxImplementsRxInterface;
+
 export = ReactXP;
 
 /*
