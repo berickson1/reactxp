@@ -77,7 +77,7 @@ var AccessibilityUtil = /** @class */ (function (_super) {
         // Combine & remove duplicate traits.
         var combinedTraits = defaultTrait ? [defaultTrait] : [];
         if (traits) {
-            combinedTraits = _.union(combinedTraits, _.isArray(traits) ? traits : [traits]);
+            combinedTraits = _.union(combinedTraits, Array.isArray(traits) ? traits : [traits]);
         }
         // Max enum value in this array of traits is role for web. Return corresponding
         // role string from roleMap.
@@ -87,7 +87,7 @@ var AccessibilityUtil = /** @class */ (function (_super) {
     };
     AccessibilityUtil.prototype.accessibilityTraitToAriaSelected = function (traits) {
         // Walk through each trait and check if there's a selected trait. Return if one is found.
-        if (traits && _.isArray(traits) && traits.indexOf(Interfaces_1.Types.AccessibilityTrait.Tab) !== -1) {
+        if (traits && Array.isArray(traits) && traits.indexOf(Interfaces_1.Types.AccessibilityTrait.Tab) !== -1) {
             return traits.indexOf(Interfaces_1.Types.AccessibilityTrait.Selected) !== -1;
         }
         // Here we are returning undefined if the above condition is not met
@@ -96,7 +96,7 @@ var AccessibilityUtil = /** @class */ (function (_super) {
     };
     AccessibilityUtil.prototype.accessibilityTraitToAriaChecked = function (traits) {
         // Walk through each trait and check if there's a checked trait. Return if one is found.
-        if (traits && _.isArray(traits) && traits.indexOf(Interfaces_1.Types.AccessibilityTrait.CheckBox) !== -1) {
+        if (traits && Array.isArray(traits) && traits.indexOf(Interfaces_1.Types.AccessibilityTrait.CheckBox) !== -1) {
             return traits.indexOf(Interfaces_1.Types.AccessibilityTrait.Checked) !== -1;
         }
         // Here we are returning undefined if the above condition is not met
@@ -105,7 +105,7 @@ var AccessibilityUtil = /** @class */ (function (_super) {
     };
     AccessibilityUtil.prototype.accessibilityTraitToAriaHasPopup = function (traits) {
         // Walk through each trait and check if there's a hasPopup trait. Return if one is found.
-        if (traits && _.isArray(traits) && traits.indexOf(Interfaces_1.Types.AccessibilityTrait.HasPopup) !== -1) {
+        if (traits && Array.isArray(traits) && traits.indexOf(Interfaces_1.Types.AccessibilityTrait.HasPopup) !== -1) {
             return traits.indexOf(Interfaces_1.Types.AccessibilityTrait.HasPopup) !== -1;
         }
         // Here we are returning undefined if the above condition is not met

@@ -42,7 +42,6 @@ var EventHelpers_1 = require("../native-common/utils/EventHelpers");
 var FocusManager_1 = require("../native-desktop/utils/FocusManager");
 var FocusManager_2 = require("../common/utils/FocusManager");
 var Interfaces_1 = require("../common/Interfaces");
-var _ = require("../native-common/utils/lodashMini");
 var UserInterface_1 = require("../native-common/UserInterface");
 var View_1 = require("../native-common/View");
 var KEY_CODE_ENTER = 13;
@@ -171,7 +170,7 @@ var View = /** @class */ (function (_super) {
         }
     };
     View.prototype._hasTrait = function (trait, traits) {
-        return traits === trait || (_.isArray(traits) && traits.indexOf(trait) !== -1);
+        return traits === trait || (Array.isArray(traits) && traits.indexOf(trait) !== -1);
     };
     View.prototype._showContextMenu = function (keyEvent) {
         var _this = this;

@@ -77,5 +77,6 @@ declare module ReactXP {
     export import createElement = React.createElement;
     export import Children = React.Children;
     let __spread: any;
+    export import Fragment = React.Fragment;
 }
 export = ReactXP;

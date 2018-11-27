@@ -105,6 +105,7 @@ var ReactXP;
     ReactXP.createElement = React.createElement;
     ReactXP.Children = React.Children;
     ReactXP.__spread = React.__spread;
+    ReactXP.Fragment = React.Fragment;
 })(ReactXP || (ReactXP = {}));
 // -- STRANGE THINGS GOING ON HERE --
 // See web/ReactXP.tsx for more details.

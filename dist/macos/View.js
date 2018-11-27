@@ -41,10 +41,10 @@ var View = /** @class */ (function (_super) {
         }
         var _loop_2 = function (name_2) {
             var handler = this_2._internalProps[name_2];
-            if (name_2 === 'onDragStart') {
-                this_2._internalProps.allowDrag = true;
-            }
             if (handler) {
+                if (name_2 === 'onDragStart') {
+                    this_2._internalProps.allowDrag = true;
+                }
                 this_2._internalProps[name_2] = function (e) {
                     var dndEvent = EventHelpers_1.default.toDragEvent(e);
                     handler(dndEvent);

@@ -96,6 +96,7 @@ var ReactXP;
     ReactXP.createElement = React.createElement;
     ReactXP.Children = React.Children;
     ReactXP.__spread = React.__spread;
+    ReactXP.Fragment = React.Fragment;
 })(ReactXP || (ReactXP = {}));
 ViewBase_1.ViewBase.setActivationState(App_1.default.getActivationState());
 App_1.default.activationStateChangedEvent.subscribe(function (newState) {

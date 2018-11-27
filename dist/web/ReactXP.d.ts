@@ -75,8 +75,9 @@ declare module ReactXP {
     export import Types = RXTypes;
     export import Component = React.Component;
     export import ComponentBase = RXTypes.ComponentBase;
-    let createElement: typeof React.createElement;
-    let Children: React.ReactChildren;
+    export import createElement = React.createElement;
+    export import Children = React.Children;
     let __spread: any;
+    export import Fragment = React.Fragment;
 }
 export = ReactXP;

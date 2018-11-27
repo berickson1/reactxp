@@ -32,6 +32,12 @@ var Accessibility = /** @class */ (function (_super) {
         // Queue of pending announcements.
         _this._announcementQueue = [];
         _this._retryTimestamp = NaN;
+        _this._trackQueueStatus = function (newState) {
+            if (_this._isScreenReaderEnabled && ['background', 'inactive'].indexOf(newState) >= 0) {
+                _this._announcementQueue = [];
+                _this._retryTimestamp = NaN;
+            }
+        };
         _this._recalcAnnouncement = function (payload) {
             if (_this._announcementQueue.length === 0) {
                 return;
@@ -57,6 +63,8 @@ var Accessibility = /** @class */ (function (_super) {
         if (RN.AccessibilityInfo) {
             // Subscribe to an event to get notified when an announcement will finish.
             RN.AccessibilityInfo.addEventListener('announcementFinished', _this._recalcAnnouncement);
+            // Subscribe to clear queue depending on app state
+            RN.AppState.addEventListener('change', _this._trackQueueStatus);
         }
         return _this;
     }

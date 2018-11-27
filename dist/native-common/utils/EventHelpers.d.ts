@@ -1,9 +1,3 @@
-/**
- * EventHelpers.ts
- *
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Licensed under the MIT license.
- */
 import { Types } from '../../common/Interfaces';
 export declare class EventHelpers {
     toKeyboardEvent(e: Types.SyntheticEvent): Types.KeyboardEvent;

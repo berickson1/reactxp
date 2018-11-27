@@ -1,13 +1,14 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * EventHelpers.ts
  *
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT license.
  */
-Object.defineProperty(exports, "__esModule", { value: true });
+var react_native_1 = require("react-native");
 var lodashMini_1 = require("./lodashMini");
-//
+var _isNativeMacOs = react_native_1.Platform.OS === 'macos';
 // These helpers promote a SyntheticEvent to their higher level counterparts
 var EventHelpers = /** @class */ (function () {
     function EventHelpers() {
@@ -168,6 +169,30 @@ var EventHelpers = /** @class */ (function () {
                     case '189':
                         keyCode = 189;
                         break;
+                }
+            }
+            // Remap some characters on macos
+            if (_isNativeMacOs) {
+                // Handle F-Keys
+                if (keyCode >= 63236 && keyCode <= 63247) {
+                    // Re-map to proper F-keys
+                    keyCode = keyCode - 632124;
+                }
+                else if (keyCode === 63272) {
+                    // Delete
+                    keyCode = 46;
+                }
+                else if (keyCode === 127) {
+                    // Backspace
+                    keyCode = 8;
+                }
+                else if (keyCode >= 632376 && keyCode <= 632377) {
+                    // Page Up / Down
+                    keyCode = keyCode - 63184;
+                }
+                else if (keyCode >= 63232 && keyCode <= 63235) {
+                    // Arrow Keys
+                    keyCode = keyCode - 63213;
                 }
             }
             // We need to add keyCode and other properties to the original event, but React Native

@@ -24,7 +24,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var PropTypes = require("prop-types");
 var React = require("react");
 var AutoFocusHelper_1 = require("../common/utils/AutoFocusHelper");
-var EventHelpers_1 = require("../native-common/utils/EventHelpers");
 var FocusManager_1 = require("./utils/FocusManager");
 var Styles_1 = require("./Styles");
 var Timers_1 = require("../common/utils/Timers");
@@ -91,7 +90,7 @@ var Link = /** @class */ (function (_super) {
             if (_this.props.onContextMenu) {
                 e.stopPropagation();
                 e.preventDefault();
-                _this.props.onContextMenu(EventHelpers_1.default.toMouseEvent(e));
+                _this.props.onContextMenu(e);
             }
         };
         return _this;

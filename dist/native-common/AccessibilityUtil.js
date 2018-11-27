@@ -83,7 +83,7 @@ var AccessibilityUtil = /** @class */ (function (_super) {
         }
         var traits;
         if (defaultTrait && ensureDefaultTrait) {
-            if (_.isArray(overrideTraits)) {
+            if (Array.isArray(overrideTraits)) {
                 traits = overrideTraits.indexOf(defaultTrait) === -1 ? overrideTraits.concat([defaultTrait]) : overrideTraits;
             }
             else {
@@ -91,7 +91,7 @@ var AccessibilityUtil = /** @class */ (function (_super) {
             }
         }
         else {
-            traits = _.isArray(overrideTraits) ? overrideTraits : [overrideTraits || defaultTrait];
+            traits = Array.isArray(overrideTraits) ? overrideTraits : [overrideTraits || defaultTrait];
         }
         return _.compact(_.map(traits, function (t) { return t ? traitsMap[t] : undefined; }));
     };
@@ -103,7 +103,7 @@ var AccessibilityUtil = /** @class */ (function (_super) {
         if (!overrideTraits && !defaultTrait) {
             return undefined;
         }
-        var combinedTraits = _.isArray(overrideTraits) ? overrideTraits : [overrideTraits || defaultTrait];
+        var combinedTraits = Array.isArray(overrideTraits) ? overrideTraits : [overrideTraits || defaultTrait];
         var maxTrait = _.max(_.filter(combinedTraits, function (t) { return componentTypeMap.hasOwnProperty(t); }));
         return maxTrait ? componentTypeMap[maxTrait] : undefined;
     };

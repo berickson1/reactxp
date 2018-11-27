@@ -49,6 +49,7 @@ export declare class View extends ViewBase<Types.ViewProps, Types.Stateless, RN.
      * as on android that would lead to extra layers of Views.
      */
     protected _buildInternalProps(props: Types.ViewProps): void;
+    private _onKeyPress;
     private _isTouchFeedbackApplicable;
     private _opacityActive;
     private _opacityInactive;

@@ -18,12 +18,6 @@ var AnimatedValue = /** @class */ (function () {
     return AnimatedValue;
 }());
 exports.AnimatedValue = AnimatedValue;
-var InterpolatedValue = /** @class */ (function () {
-    function InterpolatedValue() {
-    }
-    return InterpolatedValue;
-}());
-exports.InterpolatedValue = InterpolatedValue;
 // Auto, Yes, No - iOS & Android.
 // NoHideDescendants - iOS, Android, & Desktop.
 var ImportantForAccessibility;

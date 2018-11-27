@@ -130,6 +130,11 @@ var View = /** @class */ (function (_super) {
         _this._internalProps = {};
         _this._mixinIsApplied = false;
         _this._isMounted = false;
+        _this._onKeyPress = function (e) {
+            if (_this.props.onKeyPress) {
+                _this.props.onKeyPress(EventHelpers_1.default.toKeyboardEvent(e));
+            }
+        };
         _this._hideUnderlay = function () {
             if (!_this._isMounted || !_this._nativeComponent) {
                 return;
@@ -313,6 +318,9 @@ var View = /** @class */ (function (_super) {
                 this._internalProps.pointerEvents = 'box-none';
             }
         }
+        if (props.onKeyPress) {
+            this._internalProps.onKeyPress = this._onKeyPress;
+        }
         var baseStyle = this._getStyles(props);
         this._internalProps.style = baseStyle;
         if (this._mixinIsApplied) {
@@ -474,8 +482,17 @@ var View = /** @class */ (function (_super) {
         if (this._isMounted) {
             AccessibilityUtil_1.default.setAccessibilityFocus(this);
         }
-        if (this._nativeComponent && this._nativeComponent.focus) {
-            this._nativeComponent.focus();
+        if (this._nativeComponent) {
+            if (this._nativeComponent.focus) {
+                this._nativeComponent.focus();
+            }
+            else if (this._nativeComponent._component) {
+                // Components can be wrapped by RN.Animated implementation, peek at the inner workings here
+                var innerComponent = this._nativeComponent._component;
+                if (innerComponent && innerComponent.focus) {
+                    innerComponent.focus();
+                }
+            }
         }
     };
     View.contextTypes = {

@@ -14,6 +14,7 @@ export declare class Accessibility extends NativeAccessibility {
     constructor();
     protected _updateScreenReaderStatus(isEnabled: boolean): void;
     announceForAccessibility(announcement: string): void;
+    private _trackQueueStatus;
     private _postAnnouncement;
     private _recalcAnnouncement;
     private _compareRawAnnouncements;
