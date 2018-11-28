@@ -377,16 +377,9 @@ var View = /** @class */ (function (_super) {
         }
     };
     View.prototype.blur = function () {
-        if (this._isMounted) {
-            try {
-                var el = ReactDOM.findDOMNode(this);
-                if (el) {
-                    el.blur();
-                }
-            }
-            catch (_a) {
-                // Handle exception due to potential unmount race condition.
-            }
+        var el = this._getContainer();
+        if (el) {
+            el.blur();
         }
     };
     View.prototype.requestFocus = function () {
@@ -394,16 +387,9 @@ var View = /** @class */ (function (_super) {
         AutoFocusHelper_1.FocusArbitratorProvider.requestFocus(this, function () { return _this.focus(); }, function () { return _this._isMounted; });
     };
     View.prototype.focus = function () {
-        if (this._isMounted) {
-            try {
-                var el = ReactDOM.findDOMNode(this);
-                if (el) {
-                    el.focus();
-                }
-            }
-            catch (_a) {
-                // Handle exception due to potential unmount race condition.
-            }
+        var el = this._getContainer();
+        if (el) {
+            el.focus();
         }
     };
     View.contextTypes = {

@@ -98,6 +98,14 @@ var GestureView = /** @class */ (function (_super) {
                 _this.props.onTap(tapEvent);
             }
         };
+        _this._onRef = function (ref) {
+            _this._view = ref || undefined;
+        };
+        _this._onKeyPress = function (e) {
+            if (_this.props.onKeyPress) {
+                _this.props.onKeyPress(EventHelpers_1.default.toKeyboardEvent(e));
+            }
+        };
         // Setup Pan Responder
         _this._panResponder = RN.PanResponder.create({
             onStartShouldSetPanResponder: function (e, gestureState) {
@@ -535,12 +543,29 @@ var GestureView = /** @class */ (function (_super) {
         var importantForAccessibility = AccessibilityUtil_1.default.importantForAccessibilityToString(this.props.importantForAccessibility, _defaultImportantForAccessibility);
         var accessibilityTrait = AccessibilityUtil_1.default.accessibilityTraitToString(this.props.accessibilityTraits);
         var accessibilityComponentType = AccessibilityUtil_1.default.accessibilityComponentTypeToString(this.props.accessibilityTraits);
-        var macAccessibilityProps = _isNativeMacOs && App_1.default.supportsExperimentalKeyboardNavigation ? {
-            acceptsKeyboardFocus: this.props.onTap ? true : undefined,
-            enableFocusRing: this.props.onTap ? true : undefined,
-            onClick: this.props.onTap ? this._sendTapEvent : undefined
-        } : undefined;
-        return (React.createElement(RN.View, __assign({ style: [ViewBase_1.default.getDefaultViewStyle(), this.props.style], importantForAccessibility: importantForAccessibility, accessibilityTraits: accessibilityTrait, accessibilityComponentType: accessibilityComponentType, accessibilityLabel: this.props.accessibilityLabel, testID: this.props.testId }, this._panResponder.panHandlers, macAccessibilityProps), this.props.children));
+        var extendedProps = {
+            onFocus: this.props.onFocus,
+            onBlur: this.props.onBlur,
+            onKeyPress: this.props.onKeyPress ? this._onKeyPress : undefined
+        };
+        if (_isNativeMacOs && App_1.default.supportsExperimentalKeyboardNavigation && this.props.onTap) {
+            extendedProps.onClick = this._sendTapEvent;
+            if (this.props.tabIndex === undefined || this.props.tabIndex >= 0) {
+                extendedProps.acceptsKeyboardFocus = true;
+                extendedProps.enableFocusRing = true;
+            }
+        }
+        return (React.createElement(RN.View, __assign({ ref: this._onRef, style: [ViewBase_1.default.getDefaultViewStyle(), this.props.style], importantForAccessibility: importantForAccessibility, accessibilityTraits: accessibilityTrait, accessibilityComponentType: accessibilityComponentType, accessibilityLabel: this.props.accessibilityLabel, testID: this.props.testId }, this._panResponder.panHandlers, extendedProps), this.props.children));
+    };
+    GestureView.prototype.focus = function () {
+        if (this._view && this._view.focus) {
+            this._view.focus();
+        }
+    };
+    GestureView.prototype.blur = function () {
+        if (this._view && this._view.blur) {
+            this._view.blur();
+        }
     };
     return GestureView;
 }(React.Component));

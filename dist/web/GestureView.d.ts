@@ -14,6 +14,7 @@ export interface GestureViewContext {
 }
 export declare class GestureView extends React.Component<Types.GestureViewProps, Types.Stateless> {
     private _id;
+    private _isMounted;
     private _container;
     private _pendingLongPressEvent;
     private _longPressTimer;
@@ -24,8 +25,12 @@ export declare class GestureView extends React.Component<Types.GestureViewProps,
     private _gestureTypeLocked;
     private _skipNextTap;
     static contextTypes: React.ValidationMap<any>;
+    componentDidMount(): void;
     componentWillUnmount(): void;
     render(): JSX.Element;
+    blur(): void;
+    focus(): void;
+    protected _getContainer(): HTMLElement | null;
     private _createMouseResponder;
     private _disposeMouseResponder;
     private _setContainerRef;

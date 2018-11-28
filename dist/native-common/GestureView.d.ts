@@ -19,6 +19,7 @@ export declare abstract class GestureView extends React.Component<Types.GestureV
     private _pendingGestureState;
     private _lastTapEvent;
     private _lastGestureStartEvent;
+    private _view;
     constructor(props: Types.GestureViewProps);
     componentWillUnmount(): void;
     protected abstract _getPreferredPanRatio(): number;
@@ -47,5 +48,9 @@ export declare abstract class GestureView extends React.Component<Types.GestureV
     private _sendTapEvent;
     private _sendDoubleTapEvent;
     render(): JSX.Element;
+    private _onRef;
+    private _onKeyPress;
+    focus(): void;
+    blur(): void;
 }
 export default GestureView;

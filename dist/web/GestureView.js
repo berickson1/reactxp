@@ -24,6 +24,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var PropTypes = require("prop-types");
 var React = require("react");
+var ReactDOM = require("react-dom");
 var AccessibilityUtil_1 = require("./AccessibilityUtil");
 var Interfaces_1 = require("../common/Interfaces");
 var lodashMini_1 = require("./utils/lodashMini");
@@ -60,6 +61,7 @@ var GestureView = /** @class */ (function (_super) {
     function GestureView() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this._id = _idCounter++;
+        _this._isMounted = false;
         // private _pendingGestureState: Types.PanGestureState = null;
         _this._pendingGestureType = GestureType.None;
         _this._gestureTypeLocked = false;
@@ -184,14 +186,42 @@ var GestureView = /** @class */ (function (_super) {
         };
         return _this;
     }
+    GestureView.prototype.componentDidMount = function () {
+        this._isMounted = true;
+    };
     GestureView.prototype.componentWillUnmount = function () {
+        this._isMounted = false;
         // Dispose of timer before the component goes away.
         this._cancelDoubleTapTimer();
     };
     GestureView.prototype.render = function () {
         var ariaRole = AccessibilityUtil_1.default.accessibilityTraitToString(this.props.accessibilityTraits);
         var isAriaHidden = AccessibilityUtil_1.default.isHidden(this.props.importantForAccessibility);
-        return (React.createElement("div", { style: this._getStyles(), ref: this._setContainerRef, onMouseDown: this._onMouseDown, onClick: this._onClick, onWheel: this._onWheel, role: ariaRole, "aria-label": this.props.accessibilityLabel, "aria-hidden": isAriaHidden, onContextMenu: this.props.onContextMenu ? this._sendContextMenuEvent : undefined, "data-test-id": this.props.testId }, this.props.children));
+        return (React.createElement("div", { style: this._getStyles(), tabIndex: this.props.tabIndex, ref: this._setContainerRef, onMouseDown: this._onMouseDown, onClick: this._onClick, onWheel: this._onWheel, onFocus: this.props.onFocus, onBlur: this.props.onBlur, onKeyPress: this.props.onKeyPress, role: ariaRole, "aria-label": this.props.accessibilityLabel, "aria-hidden": isAriaHidden, onContextMenu: this.props.onContextMenu ? this._sendContextMenuEvent : undefined, "data-test-id": this.props.testId }, this.props.children));
+    };
+    GestureView.prototype.blur = function () {
+        var el = this._getContainer();
+        if (el) {
+            el.blur();
+        }
+    };
+    GestureView.prototype.focus = function () {
+        var el = this._getContainer();
+        if (el) {
+            el.focus();
+        }
+    };
+    GestureView.prototype._getContainer = function () {
+        if (!this._isMounted) {
+            return null;
+        }
+        try {
+            return ReactDOM.findDOMNode(this);
+        }
+        catch (_a) {
+            // Handle exception due to potential unmount race condition.
+            return null;
+        }
     };
     GestureView.prototype._createMouseResponder = function (container) {
         var _this = this;
