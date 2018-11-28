@@ -1115,7 +1115,7 @@ export class VirtualListView<ItemInfo extends VirtualListViewItemInfo>
         }
 
         _.each(cellList, cell => {
-            let tabIndexValue = -1;
+            let tabIndexValue: number | undefined;
             let isFocused = false;
             if (cell.item) {
                 if (cell.item && cell.item.isNavigable) {
@@ -1172,7 +1172,7 @@ export class VirtualListView<ItemInfo extends VirtualListViewItemInfo>
         const scrollViewStyle = [_styles.scrollContainer];
         let staticContainerStyle: (RX.Types.ViewStyleRuleSet | RX.Types.AnimatedViewStyleRuleSet)[] = [_styles.staticContainer];
         if (this.props.style) {
-            if (Array.isArray(this.props.style)) {
+            if (_.isArray(this.props.style)) {
                 staticContainerStyle = staticContainerStyle.concat(this.props.style as RX.Types.ViewStyleRuleSet[]);
             } else {
                 staticContainerStyle.push(this.props.style as RX.Types.ViewStyleRuleSet);
