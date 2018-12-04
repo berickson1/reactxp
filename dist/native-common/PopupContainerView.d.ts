@@ -11,22 +11,16 @@
 /// <reference types="react" />
 import * as RN from 'react-native';
 import { Types } from '../common/Interfaces';
-import { PopupContainerViewBase, PopupContainerViewBaseProps, PopupContainerViewContext } from '../common/PopupContainerViewBase';
+import { PopupContainerViewBase, PopupContainerViewBaseProps, PopupContainerViewContext, RecalcResult } from '../common/PopupContainerViewBase';
 export interface PopupContainerViewProps extends PopupContainerViewBaseProps {
     popupOptions: Types.PopupOptions;
     anchorHandle?: number;
     onDismissPopup?: () => void;
 }
-export interface PopupContainerViewState {
+export interface PopupContainerViewState extends RecalcResult {
     isMeasuringPopup: boolean;
     popupWidth: number;
     popupHeight: number;
-    anchorPosition: Types.PopupPosition;
-    anchorOffset: number;
-    popupY: number;
-    popupX: number;
-    constrainedPopupWidth: number;
-    constrainedPopupHeight: number;
 }
 export declare class PopupContainerView extends PopupContainerViewBase<PopupContainerViewProps, PopupContainerViewState> {
     private _mountedComponent;
@@ -42,7 +36,6 @@ export declare class PopupContainerView extends PopupContainerViewBase<PopupCont
     protected _onMount: (component: RN.View | null) => void;
     private _recalcPosition;
     private _recalcPositionFromLayoutData;
-    private _recalcInnerPosition;
     private _dismissPopup;
     private _startRepositionPopupTimer;
     private _stopRepositionPopupTimer;

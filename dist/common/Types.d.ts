@@ -671,7 +671,7 @@ export interface WebViewProps extends CommonStyledProps<WebViewStyleRuleSet> {
     onMessage?: (e: WebViewMessageEvent) => void;
     sandbox?: WebViewSandboxMode;
 }
-export declare type PopupPosition = 'top' | 'right' | 'bottom' | 'left';
+export declare type PopupPosition = 'top' | 'right' | 'bottom' | 'left' | 'context';
 export interface PopupOptions {
     getAnchor: () => React.Component<any, any>;
     renderPopup: (anchorPosition: PopupPosition, anchorOffset: number, popupWidth: number, popupHeight: number) => ReactNode;

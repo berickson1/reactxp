@@ -15,7 +15,7 @@ var __extends = (this && this.__extends) || (function () {
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -33,11 +33,6 @@ var lodashMini_1 = require("./utils/lodashMini");
 var PopupContainerViewBase_1 = require("../common/PopupContainerViewBase");
 var Timers_1 = require("../common/utils/Timers");
 var UserInterface_1 = require("./UserInterface");
-// Width of the "alley" around popups so they don't get too close to the boundary of the screen boundary.
-var ALLEY_WIDTH = 2;
-// How close to the edge of the popup should we allow the anchor offset to get before
-// attempting a different position?
-var MIN_ANCHOR_OFFSET = 16;
 var PopupContainerView = /** @class */ (function (_super) {
     __extends(PopupContainerView, _super);
     function PopupContainerView(props, context) {
@@ -143,179 +138,26 @@ var PopupContainerView = /** @class */ (function (_super) {
             return;
         }
         // If the popup hasn't been rendered yet, skip.
-        if (popupRect.width > 0 && popupRect.height > 0) {
-            // Make a copy of the old state.
-            var newState_1 = lodashMini_1.extend({}, this.state);
-            if (this.state.isMeasuringPopup) {
-                newState_1.isMeasuringPopup = false;
-                newState_1.popupWidth = popupRect.width;
-                newState_1.popupHeight = popupRect.height;
-            }
-            // If the anchor has disappeared, dismiss the popup.
-            if (!(anchorRect.width > 0 && anchorRect.height > 0)) {
-                this._dismissPopup();
-                return;
-            }
-            // Start by assuming that we'll be unconstrained.
-            newState_1.constrainedPopupHeight = newState_1.popupHeight;
-            newState_1.constrainedPopupWidth = newState_1.popupWidth;
-            // Get the width/height of root view window.
-            var window_1 = UserInterface_1.default.measureWindow(this.props.popupOptions.rootViewId);
-            var windowWidth_1 = window_1.width;
-            var windowHeight_1 = window_1.height;
-            // If the anchor is no longer in the window's bounds, cancel the popup.
-            if (anchorRect.left >= windowWidth_1 || anchorRect.right <= 0 ||
-                anchorRect.bottom <= 0 || anchorRect.top >= windowHeight_1) {
-                this._dismissPopup();
-                return;
-            }
-            var positionsToTry = this.props.popupOptions.positionPriorities;
-            if (!positionsToTry || positionsToTry.length === 0) {
-                positionsToTry = ['bottom', 'right', 'top', 'left'];
-            }
-            if (this.props.popupOptions.useInnerPositioning) {
-                // If the popup is meant to be shown inside the anchor we need to recalculate
-                // the position differently.
-                this._recalcInnerPosition(anchorRect, newState_1);
-                return;
-            }
-            var foundPerfectFit_1 = false;
-            var foundPartialFit_1 = false;
-            positionsToTry.forEach(function (pos) {
-                if (!foundPerfectFit_1) {
-                    var absX = 0;
-                    var absY = 0;
-                    var anchorOffset = 0;
-                    var constrainedWidth = 0;
-                    var constrainedHeight = 0;
-                    switch (pos) {
-                        case 'bottom':
-                            absY = anchorRect.bottom;
-                            absX = anchorRect.left + (anchorRect.width - newState_1.popupWidth) / 2;
-                            anchorOffset = newState_1.popupWidth / 2;
-                            if (newState_1.popupHeight <= windowHeight_1 - ALLEY_WIDTH - anchorRect.bottom) {
-                                foundPerfectFit_1 = true;
-                            }
-                            else if (!foundPartialFit_1) {
-                                constrainedHeight = windowHeight_1 - ALLEY_WIDTH - anchorRect.bottom;
-                            }
-                            break;
-                        case 'top':
-                            absY = anchorRect.top - newState_1.popupHeight;
-                            absX = anchorRect.left + (anchorRect.width - newState_1.popupWidth) / 2;
-                            anchorOffset = newState_1.popupWidth / 2;
-                            if (newState_1.popupHeight <= anchorRect.top - ALLEY_WIDTH) {
-                                foundPerfectFit_1 = true;
-                            }
-                            else if (!foundPartialFit_1) {
-                                constrainedHeight = anchorRect.top - ALLEY_WIDTH;
-                            }
-                            break;
-                        case 'right':
-                            absX = anchorRect.right;
-                            absY = anchorRect.top + (anchorRect.height - newState_1.popupHeight) / 2;
-                            anchorOffset = newState_1.popupHeight / 2;
-                            if (newState_1.popupWidth <= windowWidth_1 - ALLEY_WIDTH - anchorRect.right) {
-                                foundPerfectFit_1 = true;
-                            }
-                            else if (!foundPartialFit_1) {
-                                constrainedWidth = windowWidth_1 - ALLEY_WIDTH - anchorRect.right;
-                            }
-                            break;
-                        case 'left':
-                            absX = anchorRect.left - newState_1.popupWidth;
-                            absY = anchorRect.top + (anchorRect.height - newState_1.popupHeight) / 2;
-                            anchorOffset = newState_1.popupHeight / 2;
-                            if (newState_1.popupWidth <= anchorRect.left - ALLEY_WIDTH) {
-                                foundPerfectFit_1 = true;
-                            }
-                            else if (!foundPartialFit_1) {
-                                constrainedWidth = anchorRect.left - ALLEY_WIDTH;
-                            }
-                            break;
-                    }
-                    var effectiveWidth = constrainedWidth || newState_1.popupWidth;
-                    var effectiveHeight = constrainedHeight || newState_1.popupHeight;
-                    // Make sure we're not hanging off the bounds of the window.
-                    if (absX < ALLEY_WIDTH) {
-                        if (pos === 'top' || pos === 'bottom') {
-                            anchorOffset -= ALLEY_WIDTH - absX;
-                            if (anchorOffset < MIN_ANCHOR_OFFSET || anchorOffset > effectiveWidth - MIN_ANCHOR_OFFSET) {
-                                foundPerfectFit_1 = false;
-                            }
-                        }
-                        absX = ALLEY_WIDTH;
-                    }
-                    else if (absX > windowWidth_1 - ALLEY_WIDTH - effectiveWidth) {
-                        if (pos === 'top' || pos === 'bottom') {
-                            anchorOffset -= (windowWidth_1 - ALLEY_WIDTH - effectiveWidth - absX);
-                            if (anchorOffset < MIN_ANCHOR_OFFSET || anchorOffset > effectiveWidth - MIN_ANCHOR_OFFSET) {
-                                foundPerfectFit_1 = false;
-                            }
-                        }
-                        absX = windowWidth_1 - ALLEY_WIDTH - effectiveWidth;
-                    }
-                    if (absY < ALLEY_WIDTH) {
-                        if (pos === 'right' || pos === 'left') {
-                            anchorOffset += absY - ALLEY_WIDTH;
-                            if (anchorOffset < MIN_ANCHOR_OFFSET || anchorOffset > effectiveHeight - MIN_ANCHOR_OFFSET) {
-                                foundPerfectFit_1 = false;
-                            }
-                        }
-                        absY = ALLEY_WIDTH;
-                    }
-                    else if (absY > windowHeight_1 - ALLEY_WIDTH - effectiveHeight) {
-                        if (pos === 'right' || pos === 'left') {
-                            anchorOffset -= (windowHeight_1 - ALLEY_WIDTH - effectiveHeight - absY);
-                            if (anchorOffset < MIN_ANCHOR_OFFSET || anchorOffset > effectiveHeight - MIN_ANCHOR_OFFSET) {
-                                foundPerfectFit_1 = false;
-                            }
-                        }
-                        absY = windowHeight_1 - ALLEY_WIDTH - effectiveHeight;
-                    }
-                    if (foundPerfectFit_1 || effectiveHeight > 0 || effectiveWidth > 0) {
-                        newState_1.popupY = absY;
-                        newState_1.popupX = absX;
-                        newState_1.anchorOffset = anchorOffset;
-                        newState_1.anchorPosition = pos;
-                        newState_1.constrainedPopupWidth = effectiveWidth;
-                        newState_1.constrainedPopupHeight = effectiveHeight;
-                        foundPartialFit_1 = true;
-                    }
-                }
-            });
-            if (!lodashMini_1.isEqual(newState_1, this.state)) {
-                this.setState(newState_1);
-            }
+        if (popupRect.width <= 0 || popupRect.height <= 0) {
+            return;
         }
-    };
-    PopupContainerView.prototype._recalcInnerPosition = function (anchorRect, newState) {
-        // For inner popups we only accept the first position of the priorities since there
-        // should always be room for the bubble.
-        var pos = this.props.popupOptions.positionPriorities[0];
-        switch (pos) {
-            case 'top':
-                newState.popupY = anchorRect.top + anchorRect.height - newState.constrainedPopupHeight;
-                newState.popupX = anchorRect.left + anchorRect.height / 2 - newState.constrainedPopupWidth / 2;
-                newState.anchorOffset = newState.popupWidth / 2;
-                break;
-            case 'bottom':
-                newState.popupY = anchorRect.top + newState.constrainedPopupHeight;
-                newState.popupX = anchorRect.left + anchorRect.height / 2 - newState.constrainedPopupWidth / 2;
-                newState.anchorOffset = newState.popupWidth / 2;
-                break;
-            case 'left':
-                newState.popupY = anchorRect.top + anchorRect.height / 2 - newState.constrainedPopupHeight / 2;
-                newState.popupX = anchorRect.left + anchorRect.width - newState.constrainedPopupWidth;
-                newState.anchorOffset = newState.popupHeight / 2;
-                break;
-            case 'right':
-                newState.popupY = anchorRect.top + anchorRect.height / 2 - newState.constrainedPopupHeight / 2;
-                newState.popupX = anchorRect.left;
-                newState.anchorOffset = newState.popupHeight / 2;
-                break;
+        // Make a copy of the old state.
+        var newState = lodashMini_1.extend({}, this.state);
+        if (this.state.isMeasuringPopup) {
+            newState.isMeasuringPopup = false;
+            newState.popupWidth = popupRect.width;
+            newState.popupHeight = popupRect.height;
         }
-        newState.anchorPosition = pos;
+        // Get the width/height of root view window.
+        var window = UserInterface_1.default.measureWindow(this.props.popupOptions.rootViewId);
+        var windowDims = { width: window.width, height: window.height };
+        // Run the common recalc function and see what magic it spits out.
+        var result = PopupContainerViewBase_1.recalcPositionFromLayoutData(windowDims, anchorRect, popupRect, this.props.popupOptions.positionPriorities, this.props.popupOptions.useInnerPositioning);
+        if (!result) {
+            this._dismissPopup();
+            return;
+        }
+        lodashMini_1.extend(newState, result);
         if (!lodashMini_1.isEqual(newState, this.state)) {
             this.setState(newState);
         }

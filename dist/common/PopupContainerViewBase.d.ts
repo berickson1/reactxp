@@ -11,6 +11,7 @@
 import * as React from 'react';
 import FocusManagerBase from './utils/FocusManager';
 import { Types } from './Interfaces';
+import { Dimensions, PopupPosition } from './Types';
 export interface PopupContainerViewBaseProps extends Types.CommonProps {
     hidden?: boolean;
 }
@@ -21,6 +22,15 @@ export interface PopupComponent {
     onShow: () => void;
     onHide: () => void;
 }
+export interface RecalcResult {
+    popupY: number;
+    popupX: number;
+    anchorOffset: number;
+    anchorPosition: PopupPosition;
+    constrainedPopupWidth: number;
+    constrainedPopupHeight: number;
+}
+export declare function recalcPositionFromLayoutData(windowDims: Dimensions, anchorRect: ClientRect, popupRect: Dimensions, positionPriorities?: PopupPosition[], useInnerPositioning?: boolean): RecalcResult | undefined;
 export declare abstract class PopupContainerViewBase<P extends PopupContainerViewBaseProps, S> extends React.Component<P, S> {
     static contextTypes: React.ValidationMap<any>;
     static childContextTypes: React.ValidationMap<any>;

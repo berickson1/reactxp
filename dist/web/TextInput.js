@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -265,11 +265,11 @@ var TextInput = /** @class */ (function (_super) {
             TextInputPlaceholderSupport.getClassName(this.props.placeholderTextColor) : undefined;
         // Use a textarea for multi-line and a regular input for single-line.
         if (this.props.multiline) {
-            return (React.createElement("textarea", { ref: this._onMount, style: combinedStyles, value: this.state.inputValue, title: this.props.title, autoCorrect: this.props.autoCorrect === false ? 'off' : undefined, spellCheck: spellCheck, disabled: !editable, maxLength: this.props.maxLength, placeholder: this.props.placeholder, className: className, onChange: this._onInputChanged, onKeyDown: this._onKeyDown, onKeyUp: this._checkSelectionChanged, onInput: this._onInput, onFocus: this._onFocus, onBlur: this._onBlur, onMouseDown: this._checkSelectionChanged, onMouseUp: this._checkSelectionChanged, onPaste: this._onPaste, onScroll: this._onScroll, "aria-label": this.props.accessibilityLabel || this.props.title, "data-test-id": this.props.testId }));
+            return (React.createElement("textarea", { ref: this._onMount, style: combinedStyles, value: this.state.inputValue, title: this.props.title, tabIndex: this.props.tabIndex, autoCorrect: this.props.autoCorrect === false ? 'off' : undefined, spellCheck: spellCheck, disabled: !editable, maxLength: this.props.maxLength, placeholder: this.props.placeholder, className: className, onChange: this._onInputChanged, onKeyDown: this._onKeyDown, onKeyUp: this._checkSelectionChanged, onInput: this._onInput, onFocus: this._onFocus, onBlur: this._onBlur, onMouseDown: this._checkSelectionChanged, onMouseUp: this._checkSelectionChanged, onPaste: this._onPaste, onScroll: this._onScroll, "aria-label": this.props.accessibilityLabel || this.props.title, "data-test-id": this.props.testId }));
         }
         else {
             var _a = this._getKeyboardType(), keyboardTypeValue = _a.keyboardTypeValue, wrapInForm = _a.wrapInForm, pattern = _a.pattern;
-            var input = (React.createElement("input", { ref: this._onMount, style: combinedStyles, value: this.state.inputValue, title: this.props.title, className: className, autoCorrect: this.props.autoCorrect === false ? 'off' : undefined, spellCheck: spellCheck, disabled: !editable, maxLength: this.props.maxLength, placeholder: this.props.placeholder, size: 1, onChange: this._onInputChanged, onKeyDown: this._onKeyDown, onKeyUp: this._checkSelectionChanged, onInput: this._onInput, onFocus: this._onFocus, onBlur: this._onBlur, onMouseDown: this._checkSelectionChanged, onMouseUp: this._checkSelectionChanged, onPaste: this._onPaste, "aria-label": this.props.accessibilityLabel || this.props.title, type: keyboardTypeValue, pattern: pattern, "data-test-id": this.props.testId }));
+            var input = (React.createElement("input", { ref: this._onMount, style: combinedStyles, value: this.state.inputValue, title: this.props.title, tabIndex: this.props.tabIndex, className: className, autoCorrect: this.props.autoCorrect === false ? 'off' : undefined, spellCheck: spellCheck, disabled: !editable, maxLength: this.props.maxLength, placeholder: this.props.placeholder, size: 1, onChange: this._onInputChanged, onKeyDown: this._onKeyDown, onKeyUp: this._checkSelectionChanged, onInput: this._onInput, onFocus: this._onFocus, onBlur: this._onBlur, onMouseDown: this._checkSelectionChanged, onMouseUp: this._checkSelectionChanged, onPaste: this._onPaste, "aria-label": this.props.accessibilityLabel || this.props.title, type: keyboardTypeValue, pattern: pattern, "data-test-id": this.props.testId }));
             if (wrapInForm) {
                 // Wrap the input in a form tag if required
                 input = (React.createElement("form", { action: '', onSubmit: function (ev) { /* prevent form submission/page reload */ ev.preventDefault(); _this.blur(); }, style: _styles.formStyle }, input));

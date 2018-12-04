@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -147,12 +147,32 @@ var ScrollView = /** @class */ (function (_super) {
     };
     ScrollView.prototype.setScrollTop = function (scrollTop, animate) {
         if (this._nativeComponent) {
-            this._nativeComponent.scrollTo({ x: this._scrollLeft, y: scrollTop, animated: animate });
+            var scrollParams = { x: this._scrollLeft, y: scrollTop, animated: animate };
+            if (this._nativeComponent.scrollTo) {
+                this._nativeComponent.scrollTo(scrollParams);
+            }
+            else if (this._nativeComponent._component) {
+                // Components can be wrapped by RN.Animated implementation, peek at the inner workings here
+                var innerComponent = this._nativeComponent._component;
+                if (innerComponent && innerComponent.scrollTo) {
+                    innerComponent.scrollTo(scrollParams);
+                }
+            }
         }
     };
     ScrollView.prototype.setScrollLeft = function (scrollLeft, animate) {
         if (this._nativeComponent) {
-            this._nativeComponent.scrollTo({ x: scrollLeft, y: this._scrollTop, animated: animate });
+            var scrollParams = { x: scrollLeft, y: this._scrollTop, animated: animate };
+            if (this._nativeComponent.scrollTo) {
+                this._nativeComponent.scrollTo(scrollParams);
+            }
+            else if (this._nativeComponent._component) {
+                // Components can be wrapped by RN.Animated implementation, peek at the inner workings here
+                var innerComponent = this._nativeComponent._component;
+                if (innerComponent && innerComponent.scrollTo) {
+                    innerComponent.scrollTo(scrollParams);
+                }
+            }
         }
     };
     ScrollView.useCustomScrollbars = function () {
