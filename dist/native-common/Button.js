@@ -204,7 +204,7 @@ var Button = /** @class */ (function (_super) {
         var importantForAccessibility = AccessibilityUtil_1.default.importantForAccessibilityToString(this.props.importantForAccessibility, _defaultImportantForAccessibility);
         var accessibilityTrait = AccessibilityUtil_1.default.accessibilityTraitToString(this.props.accessibilityTraits, _defaultAccessibilityTrait, true);
         var accessibilityComponentType = AccessibilityUtil_1.default.accessibilityComponentTypeToString(this.props.accessibilityTraits, _defaultAccessibilityTrait);
-        var opacityStyle = !this.props.disableTouchOpacityAnimation && this._opacityAnimatedStyle;
+        var opacityStyle = this.props.disableTouchOpacityAnimation ? undefined : this._opacityAnimatedStyle;
         var disabledStyle = this.props.disabled ? _styles.disabled : undefined;
         if (this.props.disabled && this.props.disabledOpacity !== undefined) {
             disabledStyle = Styles_1.default.createButtonStyle({

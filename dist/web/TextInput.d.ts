@@ -11,6 +11,7 @@ import { FocusArbitratorProvider } from '../common/utils/AutoFocusHelper';
 import { Types } from '../common/Interfaces';
 export interface TextInputState {
     inputValue?: string;
+    autoResize?: boolean;
 }
 export interface TextInputContext {
     focusArbitrator?: FocusArbitratorProvider;
@@ -29,7 +30,11 @@ export declare class TextInput extends React.Component<Types.TextInputProps, Tex
     componentWillUnmount(): void;
     render(): JSX.Element;
     private _onMount;
+    private _onMultilineInput;
     private _onInput;
+    private static _shouldAutoResize;
+    private static _updateScrollPositions;
+    private static _getParentElementAndTops;
     private _onFocus;
     private _onBlur;
     private _getKeyboardType;

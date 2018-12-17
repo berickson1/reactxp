@@ -131,7 +131,8 @@ var TextInput = /** @class */ (function (_super) {
     };
     TextInput.prototype.render = function () {
         var editable = this.props.editable !== false;
-        var blurOnSubmit = this.props.blurOnSubmit || !this.props.multiline;
+        // If blurOnSubmit value is explicitly specified, use it, otherwise auto-blur single line inputs
+        var blurOnSubmit = this.props.blurOnSubmit !== undefined ? this.props.blurOnSubmit : !this.props.multiline;
         var internalProps = {
             multiline: this.props.multiline,
             style: Styles_1.default.combine([_styles.defaultTextInput, this.props.style]),

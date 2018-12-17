@@ -25,6 +25,7 @@ var PropTypes = require("prop-types");
 var React = require("react");
 var AutoFocusHelper_1 = require("../common/utils/AutoFocusHelper");
 var FocusManager_1 = require("./utils/FocusManager");
+var lodashMini_1 = require("./utils/lodashMini");
 var Styles_1 = require("./Styles");
 var _isMac = (typeof navigator !== 'undefined') && (typeof navigator.platform === 'string') && (navigator.platform.indexOf('Mac') >= 0);
 var _styles = {
@@ -121,6 +122,13 @@ var TextInput = /** @class */ (function (_super) {
         _this._ariaLiveEnabled = false;
         _this._onMount = function (comp) {
             _this._mountedComponent = comp;
+            if (_this._mountedComponent && _this._mountedComponent instanceof HTMLTextAreaElement) {
+                TextInput._updateScrollPositions(_this._mountedComponent, !!_this.state.autoResize);
+            }
+        };
+        _this._onMultilineInput = function (ev) {
+            _this._onInput();
+            TextInput._updateScrollPositions(ev.currentTarget, !!_this.state.autoResize);
         };
         _this._onInput = function () {
             if (_isMac && _this._mountedComponent && _this._isFocused && !_this._ariaLiveEnabled) {
@@ -207,24 +215,36 @@ var TextInput = /** @class */ (function (_super) {
             _this._checkSelectionChanged();
         };
         _this._onScroll = function (e) {
+            var targetElement = e.currentTarget;
+            // Fix scrollTop if the TextInput can auto-grow
+            // If the item is bounded by max-height, don't scroll since we want input to follow the cursor at that point
+            if (_this.state.autoResize && targetElement.scrollHeight < targetElement.clientHeight) {
+                targetElement.scrollTop = 0;
+            }
             if (_this.props.onScroll) {
-                var _a = e.target, scrollLeft = _a.scrollLeft, scrollTop = _a.scrollTop;
-                _this.props.onScroll(scrollLeft, scrollTop);
+                _this.props.onScroll(targetElement.scrollLeft, targetElement.scrollTop);
             }
         };
         _this._focus = function () {
             AutoFocusHelper_1.FocusArbitratorProvider.requestFocus(_this, function () { return _this.focus(); }, function () { return !!_this._mountedComponent; });
         };
         _this.state = {
-            inputValue: props.value !== undefined ? props.value : (props.defaultValue || '')
+            inputValue: props.value !== undefined ? props.value : (props.defaultValue || ''),
+            autoResize: TextInput._shouldAutoResize(props)
         };
         return _this;
     }
     TextInput.prototype.componentWillReceiveProps = function (nextProps) {
+        var _this = this;
+        var nextState = {};
         if (nextProps.value !== undefined && nextProps.value !== this.state.inputValue) {
-            this.setState({
-                inputValue: nextProps.value
-            });
+            nextState.inputValue = nextProps.value;
+        }
+        if (nextProps.style !== this.props.style || nextProps.multiline !== this.props.multiline) {
+            var fixedHeight = TextInput._shouldAutoResize(nextProps);
+            if (this.state.autoResize !== fixedHeight) {
+                nextState.autoResize = fixedHeight;
+            }
         }
         if (nextProps.placeholderTextColor !== this.props.placeholderTextColor) {
             if (nextProps.placeholderTextColor) {
@@ -233,6 +253,14 @@ var TextInput = /** @class */ (function (_super) {
             if (this.props.placeholderTextColor) {
                 TextInputPlaceholderSupport.removeRef(this.props.placeholderTextColor);
             }
+        }
+        if (!lodashMini_1.isEmpty(nextState)) {
+            this.setState(nextState, function () {
+                // Resize as needed after state is set
+                if (_this._mountedComponent instanceof HTMLTextAreaElement) {
+                    TextInput._updateScrollPositions(_this._mountedComponent, !!_this.state.autoResize);
+                }
+            });
         }
     };
     TextInput.prototype.componentDidMount = function () {
@@ -265,7 +293,7 @@ var TextInput = /** @class */ (function (_super) {
             TextInputPlaceholderSupport.getClassName(this.props.placeholderTextColor) : undefined;
         // Use a textarea for multi-line and a regular input for single-line.
         if (this.props.multiline) {
-            return (React.createElement("textarea", { ref: this._onMount, style: combinedStyles, value: this.state.inputValue, title: this.props.title, tabIndex: this.props.tabIndex, autoCorrect: this.props.autoCorrect === false ? 'off' : undefined, spellCheck: spellCheck, disabled: !editable, maxLength: this.props.maxLength, placeholder: this.props.placeholder, className: className, onChange: this._onInputChanged, onKeyDown: this._onKeyDown, onKeyUp: this._checkSelectionChanged, onInput: this._onInput, onFocus: this._onFocus, onBlur: this._onBlur, onMouseDown: this._checkSelectionChanged, onMouseUp: this._checkSelectionChanged, onPaste: this._onPaste, onScroll: this._onScroll, "aria-label": this.props.accessibilityLabel || this.props.title, "data-test-id": this.props.testId }));
+            return (React.createElement("textarea", { ref: this._onMount, style: combinedStyles, value: this.state.inputValue, title: this.props.title, tabIndex: this.props.tabIndex, autoCorrect: this.props.autoCorrect === false ? 'off' : undefined, spellCheck: spellCheck, disabled: !editable, maxLength: this.props.maxLength, placeholder: this.props.placeholder, className: className, onChange: this._onInputChanged, onKeyDown: this._onKeyDown, onKeyUp: this._checkSelectionChanged, onInput: this._onMultilineInput, onFocus: this._onFocus, onBlur: this._onBlur, onMouseDown: this._checkSelectionChanged, onMouseUp: this._checkSelectionChanged, onPaste: this._onPaste, onScroll: this._onScroll, "aria-label": this.props.accessibilityLabel || this.props.title, "data-test-id": this.props.testId }));
         }
         else {
             var _a = this._getKeyboardType(), keyboardTypeValue = _a.keyboardTypeValue, wrapInForm = _a.wrapInForm, pattern = _a.pattern;
@@ -276,6 +304,55 @@ var TextInput = /** @class */ (function (_super) {
             }
             return input;
         }
+    };
+    TextInput._shouldAutoResize = function (props) {
+        // Single line boxes don't need auto-resize
+        if (!props.multiline) {
+            return false;
+        }
+        var combinedStyles = Styles_1.default.combine(props.style);
+        if (!combinedStyles || typeof combinedStyles === 'number') {
+            // Number-type styles aren't allowed on web but if they're found we can't decode them so assume not fixed height
+            return true;
+        }
+        else if (Array.isArray(combinedStyles)) {
+            // Iterate across the array and see if there's any height value
+            return combinedStyles.some(function (style) {
+                if (!style || typeof style === 'number') {
+                    return true;
+                }
+                return style.height === undefined;
+            });
+        }
+        else {
+            return combinedStyles.height === undefined;
+        }
+    };
+    TextInput._updateScrollPositions = function (element, autoResize) {
+        // If the height is fixed, there's nothing more to do
+        if (!autoResize) {
+            return;
+        }
+        // When scrolling we need to retain scroll tops of all elements
+        var scrollTops = this._getParentElementAndTops(element);
+        // Reset height to 1px so that we can detect shrinking TextInputs
+        element.style.height = '1px';
+        element.style.height = element.scrollHeight + 'px';
+        scrollTops.forEach(function (obj) {
+            obj.el.scrollTop = obj.top;
+        });
+    };
+    TextInput._getParentElementAndTops = function (textAreaElement) {
+        var element = textAreaElement;
+        var results = [];
+        while (element && element.parentElement) {
+            element = element.parentElement;
+            results.push({
+                el: element,
+                top: element.scrollTop
+            });
+        }
+        return results;
     };
     TextInput.prototype._getKeyboardType = function () {
         // Determine the correct virtual keyboardType in HTML 5.
